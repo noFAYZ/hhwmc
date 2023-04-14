@@ -5,29 +5,58 @@ import { useSDK,useContractRead } from "@thirdweb-dev/react";
 const ethers = require('ethers');
 import { getRawProofForAddress } from '../utils/whitekist';
 import contractABI from "../utils/ABI.json"
+import usdcContractABI from "../utils/ABI_USDC.json"
 import { useContract, useContractWrite } from "@thirdweb-dev/react";
-import { parseEther } from "ethers/lib/utils";
-import { useState } from "react";
+import { parseEther, parseUnits,formatUnits,formatEther } from "ethers/lib/utils";
+import { useEffect, useState } from "react";
 import { contains } from "../utils/whitekist";
 import JSConfetti from 'js-confetti'
 import Head from 'next/head'
+import { BN } from "bn.js";
+import { BigNumber } from "ethers/lib";
 
 export default function Home() {
 
   const address = useAddress()
+
+  const sdk = useSDK()
  
 
 
 
   const [mintAmount,setmintAmount]= useState(1)
   const [txHash,settxHash]= useState()
+  const [nftCost,setnftCosth]= useState(BigNumber.from("1"))
 
-  const { contract } = useContract("0x851431D95Df0456314FAA179491cC16eC4A063EC");
+  const COST = 1
+  const NFTContract = "0xE9be83836AB7A2B6Ab25A05eefebc2d691759FBC";
+  const USDCContract = "0xE097d6B3100777DC31B34dC2c58fB524C2e76921"
 
+  const { contract } = useContract(NFTContract);
+  const usdcContract = sdk?.getContractFromAbi(USDCContract,usdcContractABI)
  
 
   const { isTimerExpired, isLoading } = useContractRead(contract, "timerExpired")
 
+
+  useEffect(()=>{
+
+    const getCost = async () =>{
+      try {
+        const { contract } = useContract(NFTContract);
+        const cost = await contract?.call("cost");
+      setnftCosth(cost)
+
+      console.log(formatUnits(cost,6))
+      } catch (error) {
+        
+      }
+      
+    }
+    getCost()
+
+
+  },[contract])
 
   return (
     <div className={styles.container}>
@@ -43,29 +72,46 @@ export default function Home() {
         <h1 className={styles.title}>
         HitmonBox Mint is <a href="#">LIVE</a>!
         </h1>
+       
+
+      
 
        <div className={styles.card}>
 {address ? 
 
-<> <div className="flex justify-center align-middle content-center mt-5"> 
+<> 
+<div className="flex justify-center align-middle content-center"></div>
+{nftCost ? <span>{(formatUnits(nftCost,6)*mintAmount).toPrecision(3)} USDC</span> : null}
+ 
+
+
+<div className="flex justify-center align-middle content-center mt-5"> 
 
               <button className="bg-slate-500 px-3 pb-1 rounded-full text-xl align-middle mr-5" onClick={()=>mintAmount-1 >=1 ? setmintAmount(mintAmount-1): null}>-</button>
               <span className="flex content-center justify-center rounded px-2 w-fit text-3xl" >{mintAmount}</span>
               <button className="bg-slate-500 px-2 pb-1 rounded-full text-xl align-middle ml-5" onClick={()=>setmintAmount(mintAmount+1)}>+</button>
     </div>
   
-  {!isTimerExpired && !contains(address) ? <> <div className="mt-10 mb-5">
+  {!isTimerExpired && contains(address) ? <> <div className="mt-10 mb-5">
          
          <Web3Button
-       contractAddress="0x851431D95Df0456314FAA179491cC16eC4A063EC"
+       contractAddress={NFTContract}
        action={async (contract) => {
  
          try {
-           const tx = await contract.call("whitelistMint", [mintAmount,[getRawProofForAddress(address)]],{
-           gasLimit: 100000, // The maximum amount of gas this transaction is permitted to use.
-           value: parseEther((mintAmount*0.01).toString()), // send 0.1 ether with the contract call
-    
-         })
+          const currentAllowance = await (await usdcContract).call("allowance",[address,NFTContract]);
+
+          console.log(currentAllowance)
+
+          if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
+            // Show a prompt to the user to approve the USDT
+            const result = await (await usdcContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
+            
+            // The result contains information about the transaction, such as the transaction hash and gas used
+            console.log(result);
+          }
+          else{
+             const tx = await contract.call("whitelistMint", [mintAmount,[getRawProofForAddress(address)]])
  
          if(tx.receipt.status){
           const jsConfetti = new JSConfetti()
@@ -75,6 +121,10 @@ export default function Home() {
          }
          settxHash(tx.receipt.transactionHash)
          console.log("tx: ", tx.receipt.transactionHash)
+          }
+
+
+          
          } catch (error) {
            console.log(error)
          }
@@ -94,15 +144,25 @@ export default function Home() {
 
 
          <Web3Button
-       contractAddress="0x851431D95Df0456314FAA179491cC16eC4A063EC"
+       contractAddress={NFTContract}
        action={async (contract) => {
  
          try {
-           const tx = await contract.call("mint", [mintAmount],{
-           gasLimit: 100000, // The maximum amount of gas this transaction is permitted to use.
-           value: parseEther((mintAmount*0.01).toString()), // send 0.1 ether with the contract call
-    
-         })
+
+          const currentAllowance = await (await usdcContract).call("allowance",[address,NFTContract]);
+
+          console.log(currentAllowance)
+
+          if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
+            // Show a prompt to the user to approve the USDT
+            const result = await (await usdcContract).call("approve",[NFTContract, parseUnits((mintAmount*1).toString(),6)]);
+            
+            // The result contains information about the transaction, such as the transaction hash and gas used
+            console.log(result);
+          }
+
+          else{
+            const tx = await contract.call("mint", [mintAmount])
  
          if(tx.receipt.status){
           const jsConfetti = new JSConfetti()
@@ -113,6 +173,12 @@ export default function Home() {
          settxHash(tx.receipt.transactionHash)
          console.log("tx: ", tx.receipt.transactionHash)
          console.log("tx: ", tx)
+          }
+
+
+
+
+           
          } catch (error) {
            console.log(error)
          }
@@ -136,7 +202,7 @@ export default function Home() {
        
 
         <div className="my-10">
-          {txHash? <div > <span className="text-black font-bold">TX:</span>  <a className="bg-gray-800 px-2 rounded" href="" >etherscan.io/tx/{txHash}</a></div> : <></>}
+          {txHash? <div > <span className="text-black font-bold">TX:</span>  <a className="bg-gray-800 px-2 rounded" href="" target={_blank}>etherscan.io/tx/{txHash}</a></div> : <></>}
      
         </div>
       </main>
