@@ -10,6 +10,7 @@ import { parseEther } from "ethers/lib/utils";
 import { useState } from "react";
 import { contains } from "../utils/whitekist";
 import JSConfetti from 'js-confetti'
+import Head from 'next/head'
 
 export default function Home() {
 
@@ -30,6 +31,9 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
+      <Head>
+        <title>HitmonBox Mint</title>
+      </Head>
       <div className="flex justify-end mt-10"><ConnectWallet  /></div>
 
       
@@ -37,7 +41,7 @@ export default function Home() {
 
          
         <h1 className={styles.title}>
-          Mint is <a href="#">LIVE</a>!
+        HitmonBox Mint is <a href="#">LIVE</a>!
         </h1>
 
        <div className={styles.card}>
