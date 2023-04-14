@@ -5,7 +5,7 @@ import { MerkleTree } from 'merkletreejs';
 import keccak256 from 'keccak256';
 import { getRawProofForAddress } from '../utils/whitekist';
 
-function admin() {
+function Admin() {
 
 const [merkleArray,setmerkleArray] = useState([])
 const [merkleProofArray,setmerkleProofArray] = useState()
@@ -92,4 +92,4 @@ function getValidAddresses(addresses) {
   )
 }
 
-export default admin
+export default Admin
