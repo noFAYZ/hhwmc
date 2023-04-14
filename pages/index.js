@@ -42,7 +42,7 @@ export default function Home() {
 
     const getCost = async () =>{
       try {
-        const { contract } = useContract(NFTContract);
+       
         const cost = await contract?.call("cost");
       setnftCosth(cost)
 
@@ -79,8 +79,8 @@ export default function Home() {
 {address ? 
 
 <> 
-<div className="flex justify-center align-middle content-center"></div>
-{nftCost ? <span>{(formatUnits(nftCost,6)*mintAmount).toPrecision(3)} USDC</span> : null}
+
+
  
 
 
@@ -90,6 +90,8 @@ export default function Home() {
               <span className="flex content-center justify-center rounded px-2 w-fit text-3xl" >{mintAmount}</span>
               <button className="bg-slate-500 px-2 pb-1 rounded-full text-xl align-middle ml-5" onClick={()=>setmintAmount(mintAmount+1)}>+</button>
     </div>
+
+    <div className="flex justify-center align-middle content-center mt-10">{nftCost ? <span>{(formatUnits(nftCost,6)*mintAmount).toPrecision(2)} USDC</span> : null}</div>
   
   {!isTimerExpired && contains(address) ? <> <div className="mt-10 mb-5">
          
