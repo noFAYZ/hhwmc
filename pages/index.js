@@ -14,6 +14,7 @@ import JSConfetti from 'js-confetti'
 import Head from 'next/head'
 import { BigNumber } from "ethers/lib";
 import Image from 'next/image'
+import Link from 'next/link'
 
 
 export default function Home() {
@@ -101,9 +102,9 @@ export default function Home() {
               <button className="bg-slate-500 px-2 pb-1 rounded-full text-xl align-middle ml-5" onClick={()=>setmintAmount(mintAmount+1)}>+</button>
     </div>
 
-    <div className="flex justify-center align-middle content-center mt-10">{nftCost ? <span>{(formatUnits(nftCost,6)*mintAmount).toPrecision(2)} USDC</span> : null}</div>
+    <div className="flex justify-center align-middle content-center mt-10 text-lg">{nftCost ? <span>{(formatUnits(nftCost,6)*mintAmount).toPrecision(2)} USDC</span> : null}</div>
   
-  {!isTimerExpired && contains(address) ? <> <div className="flex mt-10 mb-5 justify-center">
+  {!isTimerExpired && contains(address) ? <> <div className="flex mt-5 mb-5 justify-center">
          
          <Web3Button
        contractAddress={NFTContract}
@@ -121,7 +122,7 @@ export default function Home() {
             // The result contains information about the transaction, such as the transaction hash and gas used
             console.log(result);
           }
-          else{
+     
              const tx = await contract.call("whitelistMint", [mintAmount,[getRawProofForAddress(address)]])
  
          if(tx.receipt.status){
@@ -132,7 +133,7 @@ export default function Home() {
          }
          settxHash(tx.receipt.transactionHash)
          console.log("tx: ", tx.receipt.transactionHash)
-          }
+    
 
 
           
@@ -150,7 +151,7 @@ export default function Home() {
   <> 
   
   
-  <div className="my-10">
+  <div className="my-5">
          
 
 
@@ -172,7 +173,7 @@ export default function Home() {
             console.log(result);
           }
 
-          else{
+   
             const tx = await contract.call("mint", [mintAmount])
  
          if(tx.receipt.status){
@@ -184,7 +185,7 @@ export default function Home() {
          settxHash(tx.receipt.transactionHash)
          console.log("tx: ", tx.receipt.transactionHash)
          console.log("tx: ", tx)
-          }
+      
 
 
 
@@ -207,6 +208,11 @@ export default function Home() {
   
   
   </>}
+
+  <div className="flex justify-center gap-2 text-black font-bold">
+    <div className="bg-red-500 rounded-3xl px-3 py-2 my-3">  <Link className="text-black" href="https://hitmonbox.com/investors" target="_blank">Investors</Link></div>
+    <div className="bg-red-500 rounded-3xl px-3 py-2 my-3"> <Link className="text-black" href="https://hitmonbox.com" target="_blank">HitmonBox</Link></div>
+  </div>
 
        </div>
 
