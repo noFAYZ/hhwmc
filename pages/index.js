@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { contains } from "../utils/whitekist";
 import JSConfetti from 'js-confetti'
 import Head from 'next/head'
-import { BN } from "bn.js";
 import { BigNumber } from "ethers/lib";
 
 export default function Home() {
