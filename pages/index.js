@@ -13,6 +13,8 @@ import { contains } from "../utils/whitekist";
 import JSConfetti from 'js-confetti'
 import Head from 'next/head'
 import { BigNumber } from "ethers/lib";
+import Image from 'next/image'
+
 
 export default function Home() {
 
@@ -80,11 +82,19 @@ export default function Home() {
 
 <> 
 
+<div className="flex justify-center align-middle content-center mt-2"><Image
+
+      src="/HitmonBox.png"
+      alt="Picture of the author"
+      width={200}
+      height={250}
+      className="rounded-lg"
+    /></div>
 
  
 
 
-<div className="flex justify-center align-middle content-center mt-5"> 
+<div className="flex justify-center align-middle content-center mt-10"> 
 
               <button className="bg-slate-500 px-3 pb-1 rounded-full text-xl align-middle mr-5" onClick={()=>mintAmount-1 >=1 ? setmintAmount(mintAmount-1): null}>-</button>
               <span className="flex content-center justify-center rounded px-2 w-fit text-3xl" >{mintAmount}</span>
@@ -93,7 +103,7 @@ export default function Home() {
 
     <div className="flex justify-center align-middle content-center mt-10">{nftCost ? <span>{(formatUnits(nftCost,6)*mintAmount).toPrecision(2)} USDC</span> : null}</div>
   
-  {!isTimerExpired && contains(address) ? <> <div className="mt-10 mb-5">
+  {!isTimerExpired && contains(address) ? <> <div className="flex mt-10 mb-5 justify-center">
          
          <Web3Button
        contractAddress={NFTContract}
