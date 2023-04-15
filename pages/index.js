@@ -30,6 +30,7 @@ export default function Home() {
   const [txHash,settxHash]= useState()
   const [nftCost,setnftCosth]= useState(BigNumber.from("1"))
   const [ismintPaused,setismintPaused]= useState()
+  const [totalMintedNft,settotalMintedNft]= useState(0)
 
 
   const COST = 550
@@ -53,6 +54,9 @@ export default function Home() {
 
       const isPaused = await contract?.call("paused");
       setismintPaused(isPaused)
+
+      const totalMinted = await contract?.call("totalSupply");
+      settotalMintedNft(totalMinted)
 
       console.log(formatUnits(cost,6))
       console.log(isPaused)
@@ -94,6 +98,8 @@ export default function Home() {
 {address ? 
 
 <> 
+
+<div className="flex justify-center align-middle content-center font-semibold mb-4 bg-red-600 rounded-full">{parseInt(totalMintedNft) || 0}/210 Total Minted</div>
 
 <div className="flex justify-center align-middle content-center mt-2"><Image
 
