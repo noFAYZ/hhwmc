@@ -33,8 +33,8 @@ export default function Home() {
 
 
   const COST = 1
-  const NFTContract = "0xE9be83836AB7A2B6Ab25A05eefebc2d691759FBC";
-  const USDCContract = "0xE097d6B3100777DC31B34dC2c58fB524C2e76921"
+  const NFTContract = "0x2A0777A42C42f714594a0F4e813Fc2c0f9ef541e";
+  const USDCContract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
 
   const { contract } = useContract(NFTContract);
   const usdcContract = sdk?.getContractFromAbi(USDCContract,usdcContractABI)
@@ -168,7 +168,7 @@ export default function Home() {
   <> 
   
   
-  <div className="my-5">
+  <div className="flex mt-5 mb-5 justify-center">
          
 
 
