@@ -29,6 +29,8 @@ export default function Home() {
   const [mintAmount,setmintAmount]= useState(1)
   const [txHash,settxHash]= useState()
   const [nftCost,setnftCosth]= useState(BigNumber.from("1"))
+  const [ismintPaused,setismintPaused]= useState()
+
 
   const COST = 1
   const NFTContract = "0xE9be83836AB7A2B6Ab25A05eefebc2d691759FBC";
@@ -46,10 +48,14 @@ export default function Home() {
     const getCost = async () =>{
       try {
        
-        const cost = await contract?.call("cost");
+      const cost = await contract?.call("cost");
       setnftCosth(cost)
 
+      const isPaused = await contract?.call("paused");
+      setismintPaused(isPaused)
+
       console.log(formatUnits(cost,6))
+      console.log(isPaused)
       } catch (error) {
         
       }
@@ -72,7 +78,13 @@ export default function Home() {
 
          
         <h1 className={styles.title}>
-        HitmonBox Mint is <a href="#">LIVE</a>!
+        HitmonBox Mint is 
+        
+        {!ismintPaused ? <>   <a href="#" className="underline "> LIVE</a>!</> : <><a href="#"> Paused</a>!</>}
+     
+        
+        
+        
         </h1>
        
 
@@ -98,11 +110,16 @@ export default function Home() {
 <div className="flex justify-center align-middle content-center mt-10"> 
 
               <button className="bg-slate-500 px-3 pb-1 rounded-full text-xl align-middle mr-5" onClick={()=>mintAmount-1 >=1 ? setmintAmount(mintAmount-1): null}>-</button>
-              <span className="flex content-center justify-center rounded px-2 w-fit text-3xl" >{mintAmount}</span>
+
+              <input value={mintAmount}  onChange={(e)=>setmintAmount(parseInt(e.target.value))} className="flex rounded-full items-center text-2xl text-center px-5 w-24 justify-center content-center"></input>
+
+
+
+
               <button className="bg-slate-500 px-2 pb-1 rounded-full text-xl align-middle ml-5" onClick={()=>setmintAmount(mintAmount+1)}>+</button>
     </div>
 
-    <div className="flex justify-center align-middle content-center mt-10 text-lg">{nftCost ? <span>{(formatUnits(nftCost,6)*mintAmount).toPrecision(2)} USDC</span> : null}</div>
+    <div className="flex justify-center align-middle content-center mt-10 text-lg">{nftCost ? <span>{(formatUnits(nftCost,6)*mintAmount)} USDC</span> : null}</div>
   
   {!isTimerExpired && contains(address) ? <> <div className="flex mt-5 mb-5 justify-center">
          
