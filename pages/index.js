@@ -32,8 +32,8 @@ export default function Home() {
   const [ismintPaused,setismintPaused]= useState()
 
 
-  const COST = 1
-  const NFTContract = "0x2A0777A42C42f714594a0F4e813Fc2c0f9ef541e";
+  const COST = 550
+  const NFTContract = "0x81dF5CB950308a01C07240c7c4e267a0eE70DC70";
   const USDCContract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
 
   const { contract } = useContract(NFTContract);
@@ -184,7 +184,7 @@ export default function Home() {
 
           if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
             // Show a prompt to the user to approve the USDT
-            const result = await (await usdcContract).call("approve",[NFTContract, parseUnits((mintAmount*1).toString(),6)]);
+            const result = await (await usdcContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
             
             // The result contains information about the transaction, such as the transaction hash and gas used
             console.log(result);
