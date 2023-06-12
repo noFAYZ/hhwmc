@@ -6,6 +6,7 @@ const ethers = require('ethers');
 import { getRawProofForAddress } from '../utils/whitekist';
 import contractABI from "../utils/ABI.json"
 import usdcContractABI from "../utils/ABI_USDC.json"
+import usdtContractABI from "../utils/ABI_USDT.json"
 import { useContract, useContractWrite } from "@thirdweb-dev/react";
 import { parseEther, parseUnits,formatUnits,formatEther } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
@@ -15,6 +16,9 @@ import Head from 'next/head'
 import { BigNumber } from "ethers/lib";
 import Image from 'next/image'
 import Link from 'next/link'
+
+import  {ReactComponent as UsdcIcon} from '../public/usdc.svg'
+import {ReactComponent as UsdtIcon} from '../public/usdt.svg'
 
 
 export default function Home() {
@@ -31,15 +35,20 @@ export default function Home() {
   const [nftCost,setnftCosth]= useState(BigNumber.from("1"))
   const [ismintPaused,setismintPaused]= useState()
   const [totalMintedNft,settotalMintedNft]= useState(0)
+  const [toggle , setToggle ] = useState(false)
+
+  const toggleClass = " transform translate-x-5";
 
 
-  const COST = 550
-  const NFTContract = "0x81dF5CB950308a01C07240c7c4e267a0eE70DC70";
-  const USDCContract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+
+  const COST = 0.6
+  const NFTContract = "0x41b8BD55596540aBf2D7AF8Aa6e6AA085ea9460A";
+  const USDCContract = "0xE097d6B3100777DC31B34dC2c58fB524C2e76921";
+  const USDTContract = "0x466DD1e48570FAA2E7f69B75139813e4F8EF75c2";
 
   const { contract } = useContract(NFTContract);
   const usdcContract = sdk?.getContractFromAbi(USDCContract,usdcContractABI)
- 
+  const usdtContract = sdk?.getContractFromAbi(USDTContract,usdtContractABI)
 
   const { isTimerExpired, isLoading } = useContractRead(contract, "timerExpired")
 
@@ -95,7 +104,7 @@ export default function Home() {
       
 
        <div className={styles.card}>
-{address ? 
+{address && !ismintPaused ? 
 
 <> 
 
@@ -125,7 +134,33 @@ export default function Home() {
               <button className="bg-slate-500 px-2 pb-1 rounded-full text-xl align-middle ml-5" onClick={()=>setmintAmount(mintAmount+1)}>+</button>
     </div>
 
-    <div className="flex justify-center align-middle content-center mt-10 text-lg">{nftCost ? <span>{(formatUnits(nftCost,6)*mintAmount)} USDC</span> : null}</div>
+<div className="flex flex-wrap justify-center align-middle items-center pt-5 font-bold">
+
+  <button className={` bg-black p-1 px-2 rounded-l-xl ${toggle ? 'bg-red-700' : ''}`} onClick={()=>setToggle(true)}>
+  <Image
+      priority
+      src="/usdc.svg"
+      height={27}
+      width={27}
+    
+    />
+    </button>
+
+
+  
+
+  <button className={`bg-black p-1 px-2 rounded-r-xl ${toggle ? '' : 'bg-red-700'}`} onClick={()=>setToggle(false)}>  <Image
+      priority
+      src="/usdt.svg"
+      height={28}
+      width={28}
+     
+    /></button>
+</div>
+  
+
+
+    <div className="flex justify-center align-middle content-center mt-10 text-lg">{nftCost ? <span>Total: {(formatUnits(nftCost,6)*mintAmount)} {toggle ? 'USDC' : 'USDT' }</span> : null}</div>
   
   {!isTimerExpired && contains(address) ? <> <div className="flex mt-5 mb-5 justify-center">
          
@@ -134,17 +169,37 @@ export default function Home() {
        action={async (contract) => {
  
          try {
-          const currentAllowance = await (await usdcContract).call("allowance",[address,NFTContract]);
 
-          console.log(currentAllowance)
+          if(toggle){
+            const currentAllowance = await (await usdcContract).call("allowance",[address,NFTContract]);
 
-          if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
-            // Show a prompt to the user to approve the USDT
-            const result = await (await usdcContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
-            
-            // The result contains information about the transaction, such as the transaction hash and gas used
-            console.log(result);
+            if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
+                      // Show a prompt to the user to approve the USDT
+                      const result = await (await usdcContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
+                      
+                      // The result contains information about the transaction, such as the transaction hash and gas used
+                      console.log(result);
+                    }
+
           }
+          else{
+            const currentAllowance = await (await usdtContract).call("allowance",[address,NFTContract]);
+
+             if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
+              // Show a prompt to the user to approve the USDT
+              const result = await (await usdtContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
+              
+              // The result contains information about the transaction, such as the transaction hash and gas used
+              console.log(result);
+            }
+
+
+
+          }
+
+          
+          
+
      
              const tx = await contract.call("whitelistMint", [mintAmount,[getRawProofForAddress(address)]])
  
@@ -183,18 +238,38 @@ export default function Home() {
        action={async (contract) => {
  
          try {
+         
 
-          const currentAllowance = await (await usdcContract).call("allowance",[address,NFTContract]);
+          if(toggle){
+            const currentAllowance = await (await usdcContract).call("allowance",[address,NFTContract]);
 
-          console.log(currentAllowance)
+            if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
+                      // Show a prompt to the user to approve the USDT
+                      const result = await (await usdcContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
+                      
+                      // The result contains information about the transaction, such as the transaction hash and gas used
+                      console.log(result);
+                    }
 
-          if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
-            // Show a prompt to the user to approve the USDT
-            const result = await (await usdcContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
-            
-            // The result contains information about the transaction, such as the transaction hash and gas used
-            console.log(result);
           }
+          else{
+            const currentAllowance = await (await usdtContract).call("allowance",[address,NFTContract]);
+
+             if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
+              // Show a prompt to the user to approve the USDT
+              const result = await (await usdtContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
+              
+              // The result contains information about the transaction, such as the transaction hash and gas used
+              console.log(result);
+            }
+
+
+
+          }
+
+
+
+        
 
    
             const tx = await contract.call("mint", [mintAmount])
@@ -242,7 +317,7 @@ export default function Home() {
        
 
         <div className="my-10">
-          {txHash? <div > <span className="text-black font-bold">TX:</span>  <a className="bg-gray-800 px-2 rounded" href="" target={_blank}>etherscan.io/tx/{txHash}</a></div> : <></>}
+          {txHash? <div > <span className="text-black font-bold">TX:</span>  <a className="bg-gray-800 px-2 rounded" href={`https://etherscan.io/tx/${txHash}`} target="_blank">etherscan.io/tx/{txHash}</a></div> : <></>}
      
         </div>
       </main>
