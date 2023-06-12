@@ -41,10 +41,10 @@ export default function Home() {
 
 
 
-  const COST = 0.6
-  const NFTContract = "0x41b8BD55596540aBf2D7AF8Aa6e6AA085ea9460A";
-  const USDCContract = "0xE097d6B3100777DC31B34dC2c58fB524C2e76921";
-  const USDTContract = "0x466DD1e48570FAA2E7f69B75139813e4F8EF75c2";
+  const COST = 600
+  const NFTContract = "0x407d2a779F0281DB7AE363970D4dd27916090987";
+  const USDCContract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+  const USDTContract = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
 
   const { contract } = useContract(NFTContract);
   const usdcContract = sdk?.getContractFromAbi(USDCContract,usdcContractABI)

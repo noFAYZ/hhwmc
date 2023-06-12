@@ -9,7 +9,7 @@ const activeChain = "Mumbai";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ThirdwebProvider activeChain={Mumbai}>
+    <ThirdwebProvider activeChain={Ethereum}>
       <Component {...pageProps} />
     </ThirdwebProvider>
   );
