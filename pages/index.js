@@ -154,7 +154,7 @@ export default function Home() {
   
 
 
-    <div className="flex justify-center align-middle content-center mt-10 text-lg">{nftCost ? <span>Total: {(formatUnits(nftCost,6)*mintAmount)} {toggle ? 'USDC' : 'USDT' }</span> : null}</div>
+    <div className="flex justify-center align-middle content-center mt-10 text-lg">{nftCost ? <span>Total: {(formatUnits(nftCost,6)*mintAmount)} {toggle ? 'USDC' : 'USDC' }</span> : null}</div>
   
   {!isTimerExpired && contains(address) ? <> <div className="flex mt-5 mb-5 justify-center">
          
