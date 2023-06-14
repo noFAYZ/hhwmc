@@ -104,7 +104,7 @@ export default function Home() {
       
 
        <div className={styles.card}>
-{address && ismintPaused ? 
+{address && !ismintPaused ? 
 
 <> 
 
