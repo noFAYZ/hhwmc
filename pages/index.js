@@ -276,6 +276,7 @@ export default function Home() {
   <div className="flex justify-center gap-2 text-black font-bold">
     <div className="bg-red-500 rounded-3xl px-3 py-2 my-3">  <Link className="text-black" href="https://hitmonbox.com/investors" target="_blank">Investors</Link></div>
     <div className="bg-red-500 rounded-3xl px-3 py-2 my-3"> <Link className="text-black" href="https://hitmonbox.com" target="_blank">HitmonBox</Link></div>
+    <div className="bg-red-500 rounded-3xl px-3 py-2 my-3"> <Link className="text-black" href="/guide" >Mint Guide</Link></div>
   </div>
 
        </div>
