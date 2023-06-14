@@ -44,11 +44,11 @@ export default function Home() {
   const COST = 600
   const NFTContract = "0x407d2a779F0281DB7AE363970D4dd27916090987";
   const USDCContract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-  const USDTContract = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+
 
   const { contract } = useContract(NFTContract);
   const usdcContract = sdk?.getContractFromAbi(USDCContract,usdcContractABI)
-  const usdtContract = sdk?.getContractFromAbi(USDTContract,usdtContractABI)
+
 
   const { isTimerExpired, isLoading } = useContractRead(contract, "timerExpired")
 
@@ -104,7 +104,7 @@ export default function Home() {
       
 
        <div className={styles.card}>
-{address && !ismintPaused ? 
+{address && ismintPaused ? 
 
 <> 
 
@@ -179,7 +179,6 @@ export default function Home() {
          
 
           
-      
 
      
              const tx = await contract.call("whitelistMint", [mintAmount,[getRawProofForAddress(address)]])
@@ -221,7 +220,7 @@ export default function Home() {
          try {
          
 
-          if(toggle){
+
             const currentAllowance = await (await usdcContract).call("allowance",[address,NFTContract]);
 
             if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
@@ -232,21 +231,7 @@ export default function Home() {
                       console.log(result);
                     }
 
-          }
-          else{
-            const currentAllowance = await (await usdtContract).call("allowance",[address,NFTContract]);
-
-             if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
-              // Show a prompt to the user to approve the USDT
-              const result = await (await usdtContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
-              
-              // The result contains information about the transaction, such as the transaction hash and gas used
-              console.log(result);
-            }
-
-
-
-          }
+       
 
 
 
