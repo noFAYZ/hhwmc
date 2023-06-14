@@ -104,7 +104,7 @@ export default function Home() {
       
 
        <div className={styles.card}>
-{address && ismintPaused ? 
+{address && !ismintPaused ? 
 
 <> 
 
@@ -164,7 +164,7 @@ export default function Home() {
  
          try {
 
-          if(toggle){
+        
             const currentAllowance = await (await usdcContract).call("allowance",[address,NFTContract]);
 
             if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
@@ -175,24 +175,11 @@ export default function Home() {
                       console.log(result);
                     }
 
-          }
-          else{
-            const currentAllowance = await (await usdtContract).call("allowance",[address,NFTContract]);
-
-             if (currentAllowance < parseUnits((mintAmount*COST).toString(),6)) {
-              // Show a prompt to the user to approve the USDT
-              const result = await (await usdtContract).call("approve",[NFTContract, parseUnits((mintAmount*COST).toString(),6)]);
-              
-              // The result contains information about the transaction, such as the transaction hash and gas used
-              console.log(result);
-            }
-
-
-
-          }
+       
+         
 
           
-          
+      
 
      
              const tx = await contract.call("whitelistMint", [mintAmount,[getRawProofForAddress(address)]])
