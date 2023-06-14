@@ -136,7 +136,7 @@ export default function Home() {
 
 <div className="flex flex-wrap justify-center align-middle items-center pt-5 font-bold">
 
-  <button className={` bg-black p-1 px-2 rounded-xl ${toggle ? 'bg-red-700' : ''}`} onClick={()=>setToggle(true)}>
+  <button className={` bg-black p-1 px-2 rounded-xl ${toggle ? 'bg-red-700' : ''}`} >
   <Image
       priority
       src="/usdc.svg"
